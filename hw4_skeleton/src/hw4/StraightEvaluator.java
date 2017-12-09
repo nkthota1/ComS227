@@ -1,0 +1,103 @@
+package hw4;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import api.Card;
+import api.Hand;
+import api.SubsetFinder;
+
+/**
+ * Evaluator for a hand consisting of a "straight" in which the
+ * card ranks are consecutive numbers.  The number of main 
+ * cards is equal to the total cards.  An ace (card of rank 1) 
+ * may be treated as the highest possible card or as the lowest
+ * (but not both).  To evaluate a straight containing an ace it is
+ * necessary to know what the highest card rank will be in a
+ * given game; therefore, this value is specified when the
+ * evaluator is constructed.  In a hand created by this
+ * evaluator the cards are listed in descending order with high 
+ * card first, e.g. [10 9 8 7 6] or [A K Q J 10], with
+ * one exception: In case of an ace-low straight, the ace
+ * must appear last, as in [5 4 3 2 A].
+ * 
+ * The name of this evaluator is "Straight".
+ */
+//Note: You must edit this declaration to extend AbstractEvaluator
+//or to extend some other class that extends AbstractEvaluator
+public class StraightEvaluator extends AbstractEvaluator
+{  
+	/**
+	 * This is the maximum rank that a set can have
+	 */
+	private int maxCardRank;
+  /**
+   * Constructs the evaluator. Note that the maximum rank of
+   * the cards to be used must be specified in order to 
+   * correctly evaluate a straight with ace high.
+   * @param ranking
+   *   ranking of this hand
+   * @param totalCards
+   *   number of cards in a hand
+   * @param maxCardRank
+   *   largest rank of any card to be used
+   */
+  public StraightEvaluator(int ranking, int totalCards, int maxCardRank)
+  {
+	  super(ranking, totalCards, "Straight", totalCards);
+	  this.maxCardRank = maxCardRank;
+  }
+
+
+  /**
+	 * Determines whether the given array of cards satisfies the criteria for this evaluator. The length of the given array must exactly match the value returned by numMainCards(). The caller must ensure that the given array is sorted with highest-ranked card first according to Card.compareTo(). The array is not modified by this operation.
+	 * @param mainCards - array of cards
+	 * @return true if the given cards satisfy this evaluator
+	 */
+@Override
+public boolean satisfiedBy(Card[] mainCards) {
+	
+	if(mainCards.length == numMainCards())
+	{
+		if(mainCards[mainCards.length-1].getRank() == 1)
+		{
+			//this means there is an ace in the set
+			for(int i = 1; i < mainCards.length-1; i++)
+			{
+				if(!(mainCards[i].getRank() == (mainCards[i-1].getRank()+1)))
+				{
+					return false;
+				}
+			}
+			//the following is the case where ace is better low
+			if(mainCards[0].getRank()==maxCardRank)
+			{
+				return true;
+				//check if ace can be top card
+			}
+			else if(mainCards[mainCards.length-2].getRank()==2)
+			{
+				return true;
+			}
+			else{
+				return false;
+			}
+			
+			
+		}else
+		{
+			for(int i = 1; i < mainCards.length; i++)
+			{
+				if(!(mainCards[i].getRank() == (mainCards[i-1].getRank()+1)))
+				{
+					return false;
+				}
+				return true;
+			}
+		}
+			
+	}
+	return false;
+}
+
+}

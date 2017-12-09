@@ -1,0 +1,90 @@
+package hw4;
+
+import api.Card;
+import api.Hand;
+import api.IEvaluator;
+
+/**
+ * Evaluator for a hand containing (at least) three cards of the same rank.
+ * The number of main cards is three.
+ * 
+ * The name of this evaluator is "Three of a Kind".
+ */
+//Note: You must edit this declaration to extend AbstractEvaluator
+//or to extend some other class that extends AbstractEvaluator
+public class ThreeOfAKindEvaluator implements IEvaluator
+{
+  /**
+   * Constructs the evaluator.
+   * @param ranking
+   *   ranking of this hand
+   * @param totalCards
+   *   number of cards in a hand
+   */
+	private int rank;
+	
+	private int num;
+  public ThreeOfAKindEvaluator(int ranking, int totalCards)
+  {
+    // TODO: call appropriate superclass constructor and 
+    // perform other initialization
+	  rank = ranking;
+	  num = totalCards;
+  }
+
+@Override
+public String getName() {
+	// TODO Auto-generated method stub
+	return "ThreeOfAKind";
+}
+
+@Override
+public int getRanking() {
+	// TODO Auto-generated method stub
+	return rank;
+}
+
+@Override
+public int numMainCards() {
+	// TODO Auto-generated method stub
+	return 3;
+}
+
+@Override
+public int totalCards() {
+	// TODO Auto-generated method stub
+	return num;
+}
+
+@Override
+public boolean satisfiedBy(Card[] mainCards) {
+	// TODO Auto-generated method stub
+	if(mainCards.length == numMainCards()){
+		
+		
+		if(mainCards[0].getRank() == mainCards[1].getRank())
+			return true;
+	}
+		
+	return false;
+}
+
+@Override
+public boolean canSubsetSatisfy(Card[] allCards) {
+	// TODO Auto-generated method stub
+	return false;
+}
+
+@Override
+public Hand createHand(Card[] allCards, int[] subset) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public Hand createBestHand(Card[] allCards) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+}

@@ -1,0 +1,78 @@
+package hw4;
+
+
+import java.util.Arrays;
+
+import api.Card;
+import api.Hand;
+import api.IEvaluator;
+
+
+/**
+ * The class AbstractEvaluator includes common code for all evaluator types.
+ * 
+ * TODO: Expand this comment with an explanation of how your class hierarchy
+ * is organized.
+ */
+public abstract class AbstractEvaluator implements IEvaluator
+{
+	
+	private int rank;
+	private int num;
+	
+	public AbstractEvaluator(int ranking, int totalCards)
+	{
+		// TODO: call appropriate superclass constructor and 
+	    // perform other initialization
+		rank = ranking;
+		num = totalCards;
+	}
+
+	@Override
+	public abstract String getName();
+	
+	@Override
+	public int getRanking() 
+	{
+		return rank;
+	}
+
+	@Override
+	public abstract int numMainCards();
+
+	@Override
+	public int totalCards() {
+		return num;
+	}
+
+	@Override
+	public abstract boolean satisfiedBy(Card[] mainCards);
+
+	@Override
+	public boolean canSubsetSatisfy(Card[] allCards) {
+		if(allCards.length >= numMainCards())
+		{
+			Arrays.sort(allCards);
+			for (int i = 0; i < allCards.length-1; i++)
+			{
+				if(allCards[i].getRank() == allCards[i+1].getRank())
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public Hand createHand(Card[] allCards, int[] subset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Hand createBestHand(Card[] allCards) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

@@ -1,0 +1,39 @@
+package hw4;
+
+import api.Card;
+/**
+ * I made this class to generalize the satisfiedBy method for all hands that check for the same ranking
+ * @author nkthota
+ *
+ */
+public abstract class AbstractPairsEvaluator extends AbstractEvaluator{
+
+	/**
+	 * This is the same constructor as in AbstractEvaluluator but with a super.
+	 * @param ranking This is the ranking of the hand.
+	 * @param totalCards This is the number of total cards.
+	 * @param eName This is the name of the evaluator.
+	 * @param mCards This is the number of main cards. 
+	 */
+	public AbstractPairsEvaluator(int ranking, int totalCards, String eName, int mCards)  
+	{
+		super(ranking, totalCards, eName, mCards);
+	}
+	
+	public boolean satisfiedBy(Card[] mainCards)
+	{
+		if(!(mainCards.length == numMainCards()))
+		{
+			return false;
+		}
+		for(int i = 0; i < mainCards.length; i++)
+		{
+			if(!(mainCards[i]==mainCards[0]))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+}

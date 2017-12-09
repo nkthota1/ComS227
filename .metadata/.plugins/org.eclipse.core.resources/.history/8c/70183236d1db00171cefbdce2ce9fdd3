@@ -1,0 +1,102 @@
+package hw4;
+
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import api.Card;
+import api.Hand;
+import api.IEvaluator;
+import api.SubsetFinder;
+import api.Util;
+
+
+/**
+ * The class AbstractEvaluator includes common code for all evaluator types.
+ * 
+ * TODO: Expand this comment with an explanation of how your class hierarchy
+ * is organized.
+ */
+public abstract class AbstractEvaluator implements IEvaluator
+{
+	
+	private int rank;
+	private int num;
+	
+	public AbstractEvaluator(int ranking, int totalCards)
+	{
+		// TODO: call appropriate superclass constructor and 
+	    // perform other initialization
+		rank = ranking;
+		num = totalCards;
+	}
+
+	@Override
+	public abstract String getName();
+	
+	@Override
+	public int getRanking() 
+	{
+		return rank;
+	}
+
+	@Override
+	public abstract int numMainCards();
+
+	@Override
+	public int totalCards() {
+		return num;
+	}
+
+	@Override
+	public abstract boolean satisfiedBy(Card[] mainCards);
+
+	@Override
+	public boolean canSubsetSatisfy(Card[] allCards) {
+		
+		ArrayList <Card[]> allSubs = SubsetFinder.findSubsets(allCards, numMainCards());
+		for(Card[] subset: allSubs)
+		{
+			if(satisfiedBy(subset)) return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Hand createHand(Card[] allCards, int[] subset) {
+		if(subset.length != numMainCards() || allCards.length < totalCards()) return null;
+		
+		Card[] mainCards = Util.getCardSubset(allCards, subset);
+		
+		Card[] otherCards = Util.getCardNonSubset(allCards, subset);
+		
+		Card[] sideCards = new Card[totalCards() - subset.length];
+		
+		if(!satisfiedBy(mainCards))
+		{
+			return null;
+		}
+		for(int i=0; i<sideCards.length; i++)
+		{
+			sideCards[i] = otherCards[i];
+		}
+		Hand myHand = new Hand(mainCards, sideCards, getName(), getRanking());
+		return myHand;
+	}
+
+	@Override
+	public Hand createBestHand(Card[] allCards) {
+		if(!canSubsetSatisfy(allCards))
+		{
+			return null;
+		}
+		ArrayList <Hand> possibleHands = new ArrayList();
+		ArrayList<int[]> allSubsets = SubsetFinder.findSubsets(allCards.length, numMainCards());
+		for(int[] subset: allSubsets)
+		{
+			Card[] cardSubset = new Card[subset.length];
+			if(satisfiedBy(subset)) possibleHands.add(createHand(allCards, subset));
+		}
+		
+	}
+}

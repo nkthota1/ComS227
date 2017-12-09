@@ -1,0 +1,146 @@
+package hw4;
+import java.util.ArrayList;
+import api.Card;
+import api.Hand;
+import api.Util;
+
+/**
+ * Evaluator for a generalized full house.  The number of main
+ * cards is equal to the total cards.  If the total cards N is an even number,
+ * then the cards must consist of two groups of N / 2 cards that have matching rank.  
+ * If N is an odd number, then the cards must consist of two groups, one of 
+ * (N / 2) + 1 cards of matching rank and other of (N / 2) cards of matching rank. 
+ * (This evaluator is always satisfied when all cards are of the same rank.)
+ * In the case that N is odd, when creating
+ * a hand, <strong>the larger group must be listed first even if of lower rank
+ * than the smaller group</strong> (e.g. as [3 3 3 5 5] rather than [5 5 3 3 3]).
+ * 
+ * The name of this evaluator is "Full House".
+ */
+//Note: You must edit this declaration to extend AbstractEvaluator
+//or to extend some other class that extends AbstractEvaluator
+public class FullHouseEvaluator extends AbstractEvaluator
+{
+  /**
+   * Constructs the evaluator.
+   * @param ranking
+   *   ranking of this hand
+   * @param totalCards
+   *   number of cards in a hand
+   */
+  public FullHouseEvaluator(int ranking, int totalCards)
+  {
+    super(ranking, totalCards, "Full House", totalCards);
+  }
+
+  /**
+	 * Determines whether the given array of cards satisfies the criteria for this evaluator. The length of the given array must exactly match the value returned by numMainCards(). The caller must ensure that the given array is sorted with highest-ranked card first according to Card.compareTo(). The array is not modified by this operation.
+	 * @param mainCards - array of cards
+	 * @return true if the given cards satisfy this evaluator
+	 */
+@Override
+public boolean satisfiedBy(Card[] mainCards) {
+	
+	if(mainCards.length == numMainCards())
+	{
+		Card check1 = mainCards[0];
+		Card check2 = mainCards[0];
+		for (int i = 1; i < numMainCards(); i++)
+		{
+			if(!(mainCards[i].getRank() == check1.getRank()))
+			{
+				check2 = mainCards[i];
+				break;
+			}
+		}
+		int count1 = 0;
+		int count2 = 0;
+		for(int i = 1; i < numMainCards(); i++)
+		{
+			if(mainCards[i].getRank() == check1.getRank())
+			{
+				count1+=1;
+			}
+			else if(mainCards[i].getRank() == check2.getRank())
+			{
+				count2+=1;
+			}
+			else
+			{
+				return false;
+			}
+			
+		}
+		if(numMainCards()%2==0)
+		{
+			if(count1==count2&&count1==numMainCards()/2)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if(count1==numMainCards()/2&&count2==count1+1)
+			{
+				return true;
+			}
+			else if(count2==numMainCards()/2&&count1==count2+1)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+	}
+	
+	return false;
+}
+/**
+ * Returns a hand whose main cards consist of the indicated subset of the given cards. If the indicated subset does not satisfy the criteria for this evaluator, this method returns null. The subset is described as an ordered array of indices to be selected from the given Card array. The number of main cards in the hand will be the value of numMainCards() and the total number of cards in the hand will be the value of totalCards(). The side cards will consist of the best cards remaining after selecting the indicated main cards. If the length of the given array of cards is less than totalCards(), or if the length of the given array of indices is not equal to numMainCards() this method returns null. The caller must ensure that the given array is sorted with highest-ranked card first according to Card.compareTo(). The array is not modified by this operation.
+ * @param allCards - list of cards from which to select the main cards for the hand
+ * @param subset - list of indices of cards to be selected, in ascending order
+ * @return hand whose main cards consist of the indicated subset, or null if the indicated subset does not satisfy this evaluator
+ */
+@Override
+public Hand createHand(Card[] allCards, int[] subset) {
+	if(subset.length != numMainCards() || allCards.length < totalCards()) return null;
+	
+	Card[] mainCards = Util.getCardSubset(allCards, subset);
+	
+	Card[] otherCards = Util.getCardNonSubset(allCards, subset);
+	
+	Card[] sideCards = new Card[totalCards() - subset.length];
+	
+	if(!satisfiedBy(mainCards))
+	{
+		return null;
+	}
+	for(int i=0; i<sideCards.length; i++)
+	{
+		sideCards[i] = otherCards[i];
+	}
+	Hand myHand = new Hand(mainCards, sideCards, getName(), getRanking());
+	ArrayList<Card> reverse = new ArrayList();
+	
+	if(!(myHand.getMainCards().length%2==0))
+	{
+		if(myHand.getMainCards()[myHand.getMainCards().length/2]==myHand.getMainCards()[myHand.getMainCards().length])
+		{
+			for(int i =myHand.getMainCards().length-1; i==0; i++)
+			{
+				reverse.add(myHand.getMainCards()[i]);
+			}
+			for(int j = 0; j<reverse.size(); j++)
+			{
+				
+			}
+		}
+	}
+	
+	return myHand;
+}
+
+}

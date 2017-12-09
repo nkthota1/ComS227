@@ -1,0 +1,27 @@
+package hw4;
+
+import api.Card;
+
+public abstract class AbstractPairsEvaluator extends AbstractEvaluator{
+
+	public AbstractPairsEvaluator(int ranking, int totalCards) {
+		super(ranking, totalCards);
+	}
+	
+	public boolean satisfiedBy(Card[] mainCards)
+	{
+		if(!(mainCards.length == numMainCards()))
+		{
+			return false;
+		}
+		for(int i = 0; i < mainCards.length; i++)
+		{
+			if(!(mainCards[i]==mainCards[0]))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+}
